@@ -36,7 +36,7 @@
     <div id="price"></div>
 
     <script>
-        const appVersion = "V5";
+        const appVersion = "V7";
         document.getElementById('version').innerText = "Version " + appVersion;
         document.title = "Scan Prix Produit - " + appVersion;
 
@@ -48,6 +48,7 @@
             dynamicTyping: true,
             complete: function(results) {
                 produits = results.data;
+                console.log(produits); // <--- Pour voir ce que PapaParse lit vraiment
                 document.getElementById('status').innerText = "Base chargée : " + produits.length + " produits disponibles.";
                 document.getElementById('scanButton').style.display = 'inline-block';
             },
@@ -82,7 +83,7 @@
                 document.getElementById('scannedCode').innerText = "Code scanné : " + code;
                 let produit = produits.find(p => (p['Code-barres'] || '').toString().trim().toUpperCase() === code);
                 if (produit) {
-                    document.getElementById('result').innerText = produit['Produit'];
+                    document.getElementById('result').innerText = "Produit : " + produit['Produit'] + " (" + code + ")";
                     document.getElementById('price').innerText = produit['Prix'] + " €";
                 } else {
                     document.getElementById('result').innerText = "Produit introuvable pour le code : " + code;
