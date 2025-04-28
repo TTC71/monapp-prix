@@ -56,8 +56,6 @@
     <img src="Logo-le-relais-0.jpg" alt="Le Relais">
     <h1>Scan Prix Produit</h1>
 
-    <input type="file" id="csvFile" accept=".csv">
-    <br>
     <button onclick="startScanner()">Scanner un produit</button>
 
     <div id="video" style="display:none;"></div>
@@ -68,16 +66,15 @@
     <script>
         let produits = [];
 
-        document.getElementById('csvFile').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            Papa.parse(file, {
-                header: true,
-                dynamicTyping: true,
-                complete: function(results) {
-                    produits = results.data;
-                    alert('Base de données chargée avec succès !');
-                }
-            });
+        // Charger automatiquement la base de données CSV depuis GitHub
+        Papa.parse('base-produits.csv', {
+            download: true,
+            header: true,
+            dynamicTyping: true,
+            complete: function(results) {
+                produits = results.data;
+                alert('Base de données chargée avec succès !');
+            }
         });
 
         function startScanner() {
