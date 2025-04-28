@@ -10,23 +10,23 @@
             font-family: Arial, sans-serif; 
             text-align: center; 
             padding: 20px; 
-            font-size: 20px; 
+            font-size: 24px; 
         }
         img {
             max-width: 200px;
             margin-bottom: 20px;
         }
         h1 {
-            font-size: 32px;
+            font-size: 36px;
             margin-bottom: 20px;
         }
         #result {
             margin-top: 30px; 
-            font-size: 28px; 
+            font-size: 32px; 
             font-weight: bold;
         }
         #price {
-            font-size: 36px; 
+            font-size: 40px; 
             color: #4CAF50; 
             margin-top: 20px; 
             font-weight: bold;
@@ -37,10 +37,12 @@
             margin: 20px auto;
         }
         button {
-            margin: 15px; 
-            padding: 15px 30px; 
-            font-size: 22px; 
-            border-radius: 10px;
+            margin: 20px; 
+            padding: 20px 40px; 
+            font-size: 26px; 
+            width: 90%; 
+            max-width: 400px;
+            border-radius: 12px;
             background-color: #4CAF50;
             color: white;
             border: none;
@@ -66,8 +68,8 @@
     <script>
         let produits = [];
 
-        // Charger automatiquement la base de données CSV depuis GitHub
-        Papa.parse('base-produits.csv', {
+        // Charger automatiquement la base de données CSV depuis GitHub (URL absolue)
+        Papa.parse('https://ttc71.github.io/monapp-prix/base-produits.csv', {
             download: true,
             header: true,
             dynamicTyping: true,
