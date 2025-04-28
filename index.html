@@ -6,15 +6,54 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        #result { margin-top: 20px; font-size: 24px; font-weight: bold; }
-        #price { font-size: 32px; color: green; margin-top: 10px; }
-        #video { width: 100%; max-width: 400px; margin: 20px auto; }
-        button { margin: 10px; padding: 10px 20px; font-size: 18px; }
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            font-size: 20px; 
+        }
+        img {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        #result {
+            margin-top: 30px; 
+            font-size: 28px; 
+            font-weight: bold;
+        }
+        #price {
+            font-size: 36px; 
+            color: #4CAF50; 
+            margin-top: 20px; 
+            font-weight: bold;
+        }
+        #video {
+            width: 100%; 
+            max-width: 400px; 
+            margin: 20px auto;
+        }
+        button {
+            margin: 15px; 
+            padding: 15px 30px; 
+            font-size: 22px; 
+            border-radius: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
 
+    <img src="Logo-le-relais-0.jpg" alt="Le Relais">
     <h1>Scan Prix Produit</h1>
 
     <input type="file" id="csvFile" accept=".csv">
@@ -64,8 +103,8 @@
             });
 
             Quagga.onDetected(function(result) {
-                let code = result.codeResult.code;
-                let produit = produits.find(p => p['Code-barres'] == code);
+                let code = result.codeResult.code.trim();
+                let produit = produits.find(p => (p['Code-barres'] || '').toString().trim() === code);
                 if (produit) {
                     document.getElementById('result').innerText = produit['Produit'];
                     document.getElementById('price').innerText = produit['Prix'] + " €";
