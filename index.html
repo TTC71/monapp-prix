@@ -6,56 +6,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            text-align: center; 
-            padding: 20px; 
-            font-size: 24px; 
-        }
-        img {
-            max-width: 200px;
-            margin-bottom: 20px;
-        }
-        h1 {
-            font-size: 36px;
-            margin-bottom: 10px;
-        }
-        #version {
-            font-size: 18px;
-            color: #777;
-            margin-bottom: 20px;
-        }
-        #result {
-            margin-top: 30px; 
-            font-size: 32px; 
-            font-weight: bold;
-        }
-        #price {
-            font-size: 40px; 
-            color: #4CAF50; 
-            margin-top: 20px; 
-            font-weight: bold;
-        }
-        #video {
-            width: 100%; 
-            max-width: 400px; 
-            margin: 20px auto;
-        }
-        button {
-            margin: 20px; 
-            padding: 20px 40px; 
-            font-size: 26px; 
-            width: 90%; 
-            max-width: 400px;
-            border-radius: 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; font-size: 24px; }
+        img { max-width: 200px; margin-bottom: 20px; }
+        h1 { font-size: 36px; margin-bottom: 10px; }
+        #version { font-size: 18px; color: #777; margin-bottom: 20px; }
+        #status { margin: 20px 0; font-size: 20px; color: #555; }
+        #result { margin-top: 30px; font-size: 32px; font-weight: bold; }
+        #price { font-size: 40px; color: #4CAF50; margin-top: 20px; font-weight: bold; }
+        #video { width: 100%; max-width: 400px; margin: 20px auto; }
+        button { margin: 20px; padding: 20px 40px; font-size: 26px; width: 90%; max-width: 400px;
+                 border-radius: 12px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
     </style>
 </head>
 <body>
@@ -63,8 +24,9 @@
     <img src="Logo-le-relais-0.jpg" alt="Le Relais">
     <h1>Scan Prix Produit</h1>
     <div id="version"></div>
+    <div id="status">Chargement de la base de données...</div>
 
-    <button onclick="startScanner()">Scanner un produit</button>
+    <button id="scanButton" onclick="startScanner()" style="display:none;">Scanner un produit</button>
 
     <div id="video" style="display:none;"></div>
 
@@ -72,20 +34,25 @@
     <div id="price"></div>
 
     <script>
-        const appVersion = "V2-1";
+        const appVersion = "V3";
         document.getElementById('version').innerText = "Version " + appVersion;
         document.title = "Scan Prix Produit - " + appVersion;
 
         let produits = [];
 
-        // Charger automatiquement la base de données CSV depuis GitHub (URL absolue)
+        // Charger automatiquement la base de données CSV depuis GitHub
         Papa.parse('https://ttc71.github.io/monapp-prix/base-produits.csv', {
             download: true,
             header: true,
             dynamicTyping: true,
             complete: function(results) {
                 produits = results.data;
-                alert('Base de données chargée avec succès !');
+                document.getElementById('status').innerText = "Base chargée : " + produits.length + " produits disponibles.";
+                document.getElementById('scanButton').style.display = 'inline-block';
+            },
+            error: function(err) {
+                document.getElementById('status').innerText = "Erreur de chargement du fichier CSV.";
+                console.error(err);
             }
         });
 
@@ -96,9 +63,7 @@
                   name : "Live",
                   type : "LiveStream",
                   target: document.querySelector('#video'),
-                  constraints: {
-                      facingMode: "environment"
-                  }
+                  constraints: { facingMode: "environment" }
                 },
                 decoder : {
                   readers : ["code_128_reader", "ean_reader", "code_39_reader"]
