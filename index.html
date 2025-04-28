@@ -72,7 +72,7 @@
     <div id="price"></div>
 
     <script>
-        const appVersion = "V1";
+        const appVersion = "V2";
         document.getElementById('version').innerText = "Version " + appVersion;
         document.title = "Scan Prix Produit - " + appVersion;
 
@@ -101,7 +101,7 @@
                   }
                 },
                 decoder : {
-                  readers : ["ean_reader"]
+                  readers : ["code_128_reader", "ean_reader", "code_39_reader"]
                 }
             }, function(err) {
                 if (err) {
@@ -112,8 +112,8 @@
             });
 
             Quagga.onDetected(function(result) {
-                let code = result.codeResult.code.trim();
-                let produit = produits.find(p => (p['Code-barres'] || '').toString().trim() === code);
+                let code = result.codeResult.code.trim().toUpperCase();
+                let produit = produits.find(p => (p['Code-barres'] || '').toString().trim().toUpperCase() === code);
                 if (produit) {
                     document.getElementById('result').innerText = produit['Produit'];
                     document.getElementById('price').innerText = produit['Prix'] + " €";
