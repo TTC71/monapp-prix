@@ -11,6 +11,7 @@
         h1 { font-size: 36px; margin-bottom: 10px; }
         #version { font-size: 18px; color: #777; margin-bottom: 20px; }
         #status { margin: 20px 0; font-size: 20px; color: #555; }
+        #scannedCode { margin-top: 20px; font-size: 20px; color: #333; }
         #result { margin-top: 30px; font-size: 32px; font-weight: bold; }
         #price { font-size: 40px; color: #4CAF50; margin-top: 20px; font-weight: bold; }
         #video { width: 100%; max-width: 400px; margin: 20px auto; }
@@ -30,17 +31,17 @@
 
     <div id="video" style="display:none;"></div>
 
+    <div id="scannedCode"></div>
     <div id="result"></div>
     <div id="price"></div>
 
     <script>
-        const appVersion = "V4";
+        const appVersion = "V5";
         document.getElementById('version').innerText = "Version " + appVersion;
         document.title = "Scan Prix Produit - " + appVersion;
 
         let produits = [];
 
-        // Charger automatiquement la base de données CSV depuis GitHub
         Papa.parse('https://ttc71.github.io/monapp-prix/base-produits.csv', {
             download: true,
             header: true,
@@ -78,12 +79,13 @@
 
             Quagga.onDetected(function(result) {
                 let code = result.codeResult.code.trim().toUpperCase();
+                document.getElementById('scannedCode').innerText = "Code scanné : " + code;
                 let produit = produits.find(p => (p['Code-barres'] || '').toString().trim().toUpperCase() === code);
                 if (produit) {
                     document.getElementById('result').innerText = produit['Produit'];
                     document.getElementById('price').innerText = produit['Prix'] + " €";
                 } else {
-                    document.getElementById('result').innerText = "Produit introuvable";
+                    document.getElementById('result').innerText = "Produit introuvable pour le code : " + code;
                     document.getElementById('price').innerText = "";
                 }
                 Quagga.stop();
