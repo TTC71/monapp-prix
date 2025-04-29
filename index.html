@@ -73,8 +73,6 @@
     <h1>Scan Prix Produit</h1>
     <div id="version">Version 11</div>
 
-    <input type="file" id="csvFile" accept=".csv">
-    <br>
     <button onclick="startScanner()">Scanner un produit</button>
 
     <div id="count"></div>
@@ -84,17 +82,22 @@
     <script>
         let produits = [];
 
-        document.getElementById('csvFile').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            Papa.parse(file, {
-                header: true,
-                dynamicTyping: true,
-                complete: function(results) {
-                    produits = results.data.filter(p => p['Code-barres']); // éviter lignes vides
-                    document.getElementById('count').innerText = "Base chargée : " + produits.length + " produits disponibles.";
-                    alert('Base de données chargée avec succès !');
-                }
-            });
+        // Chargement automatique du fichier CSV depuis GitHub Pages
+        const csvURL = "https://ttc71.github.io/BaseProduits.csv";
+
+        Papa.parse(csvURL, {
+            download: true,
+            header: true,
+            dynamicTyping: true,
+            complete: function(results) {
+                produits = results.data.filter(p => p['Code-barres']);
+                document.getElementById('count').innerText = "Base chargée : " + produits.length + " produits disponibles.";
+                console.log("Base produits chargée automatiquement depuis GitHub.");
+            },
+            error: function(err) {
+                document.getElementById('count').innerText = "Erreur de chargement de la base.";
+                console.error("Erreur de chargement CSV :", err);
+            }
         });
 
         function startScanner() {
@@ -109,7 +112,7 @@
                     }
                 },
                 decoder: {
-                    readers: ["ean_reader", "code_128_reader"] // support des codes alphanumériques
+                    readers: ["ean_reader", "code_128_reader"]
                 }
             }, function(err) {
                 if (err) {
@@ -120,7 +123,7 @@
             });
 
             Quagga.onDetected(function(result) {
-                let code = result.codeResult.code.trim(); // garder tel quel (chiffres + lettres)
+                let code = result.codeResult.code.trim();
 
                 let produit = produits.find(p => (p['Code-barres'] || '').toString().trim() === code);
 
