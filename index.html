@@ -79,7 +79,7 @@
   <header>
     <img src="Logo-le-relais-0.jpg" alt="Logo Le Relais" />
     <h1>Scan Prix Produit</h1>
-    <div id="version">Version du code : 1.1</div>
+    <div id="version">Version du code : 1.2</div>
     <div id="ref-count">Références produits : chargement…</div>
   </header>
 
@@ -103,12 +103,19 @@
     let barcodeDetected = '';
     let csvData = [];
 
-    // Charger le CSV à l’ouverture
+    // Chargement du fichier CSV
     Papa.parse("BaseProduits.csv", {
       download: true,
       header: true,
       complete: function(results) {
-        csvData = results.data.filter(row => row["Code-barres"]);
+        csvData = results.data
+          .filter(row => row["Code-barres"])
+          .map(row => ({
+            "Code-barres": row["Code-barres"].replace(/^'/, ""),
+            "Produits": row["Produits"],
+            "Quantité": row["Quantité"],
+            "Prix": row["Prix"]
+          }));
         document.getElementById("ref-count").textContent = `Références produits importées : ${csvData.length}`;
       }
     });
@@ -132,7 +139,8 @@
         }
       }, function(err) {
         if (err) {
-          console.error(err);
+          console.error("Erreur d'initialisation Quagga :", err);
+          alert("Erreur lors de l'accès à la caméra : " + err.message);
           return;
         }
         Quagga.start();
