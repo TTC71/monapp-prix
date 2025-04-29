@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Scan Prix Produit</title>
-<script src="bibliothèques/papaparse.min.js"></script>
-<script src="bibliothèques/quagga.min.js"></script>
+  <script src="bibliothèques/papaparse.min.js"></script>
+  <script src="bibliothèques/quagga.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -79,7 +79,7 @@
   <header>
     <img src="Logo-le-relais-0.jpg" alt="Logo Le Relais" />
     <h1>Scan Prix Produit</h1>
-    <div id="version">Version du code : 12</div>
+    <div id="version">Version du code : 1.1</div>
     <div id="ref-count">Références produits : chargement…</div>
   </header>
 
@@ -108,7 +108,7 @@
       download: true,
       header: true,
       complete: function(results) {
-        csvData = results.data.filter(row => row["Code barre"]);
+        csvData = results.data.filter(row => row["Code-barres"]);
         document.getElementById("ref-count").textContent = `Références produits importées : ${csvData.length}`;
       }
     });
@@ -159,10 +159,10 @@
     });
 
     document.getElementById("validate-scan").addEventListener("click", () => {
-      let product = csvData.find(row => row["Code barre"] === barcodeDetected);
+      let product = csvData.find(row => row["Code-barres"] === barcodeDetected);
       if (product) {
         document.getElementById("product-info").innerHTML = `
-          <div><strong>Nom :</strong> ${product["Nom"]}</div>
+          <div><strong>Nom :</strong> ${product["Produits"]}</div>
           <div><strong>Quantité :</strong> ${product["Quantité"]}</div>
           <div><strong>Prix :</strong> ${product["Prix"]}</div>
         `;
