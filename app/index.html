@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion à l'application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-container img {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #1557db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #003ba8;
+        }
+
+        label {
+            font-size: 14px;
+        }
+
+        .checkbox-container {
+            text-align: left;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <img src="logo.jpg" alt="Le Relais">
+    <h2>Scan Produits PRO - Ultra PRO</h2>
+    <div class="error" id="error"></div>
+    <form id="loginForm">
+        <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+        <input type="password" name="password" placeholder="Mot de passe" id="password" required>
+        
+        <div class="checkbox-container">
+            <label><input type="checkbox" name="remember"> Rester connecté</label><br>
+            <label><input type="checkbox" id="showPassword"> Afficher le mot de passe</label>
+        </div>
+
+        <button type="submit">Se connecter</button>
+    </form>
+</div>
+
+<script>
+// Afficher/Masquer mot de passe
+const showPassword = document.getElementById('showPassword');
+const passwordInput = document.getElementById('password');
+showPassword.addEventListener('change', () => {
+    passwordInput.type = showPassword.checked ? 'text' : 'password';
+});
+
+// Formulaire de connexion
+const form = document.getElementById('loginForm');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    fetch('../scan_pro_api/login.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result.includes("admin_dashboard.php") || result.includes("user_dashboard.php")) {
+            window.location.href = result.trim();
+        } else {
+            document.getElementById('error').textContent = "Identifiants invalides.";
+        }
+    })
+    .catch(() => {
+        document.getElementById('error').textContent = "Erreur de connexion au serveur.";
+    });
+});
+</script>
+
+</body>
+</html>
